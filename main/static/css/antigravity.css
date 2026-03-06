@@ -1,0 +1,283 @@
+/* ===========================
+   ANTIGRAVITY ANIMATION SYSTEM
+   =========================== */
+
+@keyframes antigravity {
+    0% {
+        transform: translateY(0px);
+        filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
+    }
+
+    50% {
+        transform: translateY(-20px);
+        /* Adjust this for higher/lower lift */
+        filter: drop-shadow(0 25px 25px rgba(0, 0, 0, 0.2));
+    }
+
+    100% {
+        transform: translateY(0px);
+        filter: drop-shadow(0 5px 15px rgba(0, 0, 0, 0.1));
+    }
+}
+
+/* Apply to your Target Element (e.g., the "Explore" button or Property Cards) */
+.floating-element {
+    display: inline-block;
+    /* Required for transform to work correctly */
+    animation: antigravity 5s ease-in-out infinite;
+    transition: all 0.3s ease;
+}
+
+/* Pause on hover so users can click easily */
+.floating-element:hover {
+    animation-play-state: paused;
+    transform: scale(1.05) translateY(-20px);
+}
+
+/* Reveal on Scroll */
+.reveal {
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.8s ease-out;
+}
+
+.reveal.active {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Directional Reveals */
+.reveal-left {
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: all 0.8s ease-out;
+}
+
+.reveal-left.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.reveal-right {
+    opacity: 0;
+    transform: translateX(50px);
+    transition: all 0.8s ease-out;
+}
+
+.reveal-right.active {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+/* Marquee / Infinite Loop */
+.marquee {
+    overflow: hidden;
+    white-space: nowrap;
+    background: rgba(201, 168, 76, 0.05);
+    padding: 1.5rem 0;
+    border-top: 1px solid rgba(201, 168, 76, 0.1);
+    border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+    margin: 2rem 0;
+}
+
+.track {
+    display: inline-block;
+    animation: marquee 30s linear infinite;
+    padding-left: 100%;
+}
+
+.track span {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #c9a84c;
+    margin-right: 4rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+@keyframes marquee {
+    from {
+        transform: translateX(0);
+    }
+
+    to {
+        transform: translateX(-100%);
+    }
+}
+
+/* Magnetic Button Base Transition */
+.magnetic-btn {
+    transition: transform 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* ===========================
+   GLOBAL HEADER & NAVIGATION
+   =========================== */
+.menu-toggle {
+    display: none;
+}
+
+body,
+html {
+    overflow-x: hidden;
+    width: 100%;
+}
+
+header {
+    background-color: #1e1e2f;
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 50px;
+    position: relative;
+    z-index: 1000;
+}
+
+/* Invisible Admin Trigger Area (Top Left, Below Header) */
+.logo-trigger {
+    position: fixed;
+    /* Fixed to viewport so it stays in place relative to screen */
+    left: 0;
+    top: 70px;
+    /* Adjust based on your header's approx height */
+    width: 60px;
+    height: 60px;
+    /* Smaller square area */
+    z-index: 9999;
+    /* border: 2px dashed green; uncomment to see the area during dev */
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+    user-select: none;
+    /* Prevent text selection */
+}
+
+.logo span {
+    color: #f4b400;
+}
+
+nav ul {
+    list-style: none;
+    display: flex;
+    margin: 0;
+    padding: 0;
+}
+
+nav ul li {
+    margin-left: 25px;
+}
+
+nav ul li a {
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s;
+}
+
+nav ul li a:hover {
+    color: #f4b400;
+}
+
+.nav-admin-link {
+    background: rgba(201, 168, 76, 0.15) !important;
+    color: #c9a84c !important;
+    border: 1px solid rgba(201, 168, 76, 0.3) !important;
+    font-weight: 600 !important;
+    border-radius: 20px;
+    padding: 6px 14px;
+}
+
+.nav-admin-link:hover {
+    background: rgba(201, 168, 76, 0.3) !important;
+}
+
+@media screen and (max-width: 960px) {
+    header {
+        padding: 15px 20px;
+    }
+
+    .menu-toggle {
+        display: block;
+        cursor: pointer;
+        z-index: 1001;
+    }
+
+    .menu-toggle .bar {
+        width: 25px;
+        height: 3px;
+        margin: 5px auto;
+        transition: all 0.3s ease-in-out;
+        background: white;
+        display: block;
+    }
+
+    #nav-menu {
+        display: flex;
+        flex-direction: column;
+        width: 250px;
+        position: absolute;
+        top: 100%;
+        /* Relative to header */
+        right: 0;
+        left: auto;
+        transform: translateX(100%);
+        opacity: 0;
+        transition: all 0.5s cubic-bezier(0.77, 0.2, 0.05, 1.0);
+        background: #1e1e2f;
+        z-index: 999;
+        height: auto;
+        padding-bottom: 0;
+        box-shadow: -10px 10px 20px rgba(0, 0, 0, 0.3);
+    }
+
+    #nav-menu.active {
+        transform: translateX(0);
+        opacity: 1;
+    }
+
+    nav ul {
+        flex-direction: column;
+        width: 100%;
+        height: 100%;
+        justify-content: flex-start;
+        align-items: flex-end;
+        padding-top: 20px;
+        padding-right: 20px;
+    }
+
+    nav ul li {
+        width: 100%;
+        margin: 0;
+        text-align: right;
+    }
+
+    nav ul li a {
+        display: block;
+        padding: 1rem;
+        width: 100%;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Ensure Admin Link stays hidden on mobile unless explicitly shown */
+    #admin-btn[style*="display: none"] {
+        display: none !important;
+    }
+
+    /* Animation for Menu Toggle */
+    #mobile-menu.is-active .bar:nth-child(2) {
+        opacity: 0;
+    }
+
+    #mobile-menu.is-active .bar:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+
+    #mobile-menu.is-active .bar:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+}

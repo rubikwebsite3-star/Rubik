@@ -1,0 +1,28 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Gallery | RUBIK PROPERTIES{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/gallery.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- SINGLE PAGE HEADING -->
+<section class="gallery-title">
+    <h1>GALLERY</h1>
+</section>
+
+<!-- IMAGES ONLY -->
+<section class="gallery">
+    <div class="gallery-container">
+        {% for img in images %}
+        <img src="{{ img.image.url }}" alt="{{ img.title|default:'Property Image' }}">
+        {% empty %}
+        <p style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">No gallery images yet.</p>
+        {% endfor %}
+    </div>
+</section>
+
+{% endblock %}

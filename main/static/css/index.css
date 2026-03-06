@@ -1,0 +1,276 @@
+@import url('https://cdn.jsdelivr.net/npm/@fontsource/google-sans-flex/index.css');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background-color: #f5f5f5;
+    color: #333;
+}
+
+@font-face {
+    font-family: 'Chief Ranced';
+    src: url('https://db.onlinewebfonts.com/t/288f6a8e8f810edbfa1ab58742ca1d29.woff2') format('woff2'),
+        url('https://db.onlinewebfonts.com/t/288f6a8e8f810edbfa1ab58742ca1d29.woff') format('woff');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+/* Header styles removed, now in antigravity.css */
+
+/* Hero Section */
+.hero {
+    height: 80vh;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    text-align: center;
+    background: #111;
+    /* Fallback background color */
+}
+
+/* Important: Make sure hero content is ABOVE the slideshow overlay */
+.hero-content {
+    position: relative;
+    z-index: 10;
+}
+
+/* Slideshow Logic */
+.slideshow {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    /* Behind the content, but establishing its own context */
+    overflow: hidden;
+}
+
+.slideshow .slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    opacity: 0;
+    /* Start hidden */
+    animation: blurFade 20s infinite;
+    /* 4 images * 5s each = 20s total loop */
+}
+
+/* Add an overlay gradient so text is always readable regardless of image color */
+.slideshow::after {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.7));
+    z-index: 2;
+    /* Over the images, under the hero-content */
+    pointer-events: none;
+}
+
+/* Stagger the animations so they appear sequentially */
+.slideshow .slide:nth-child(1) {
+    animation-delay: 0s;
+}
+
+.slideshow .slide:nth-child(2) {
+    animation-delay: 5s;
+}
+
+.slideshow .slide:nth-child(3) {
+    animation-delay: 10s;
+}
+
+.slideshow .slide:nth-child(4) {
+    animation-delay: 15s;
+}
+
+/* 
+  BlurFade Animation Keyframes (20s cycle):
+  - 0%: Start appearing (blurry)
+  - 5%: Fully visible and sharp
+  - 25%: Still visible and sharp (end of its 5s slot)
+  - 30%: Fully faded out and blurry again
+  - 100%: Stay hidden for the rest of the 20s loop
+*/
+@keyframes blurFade {
+    0% {
+        opacity: 0;
+        filter: blur(10px);
+    }
+
+    5% {
+        opacity: 1;
+        filter: blur(0px);
+    }
+
+    25% {
+        opacity: 1;
+        filter: blur(0px);
+    }
+
+    30% {
+        opacity: 0;
+        filter: blur(10px);
+    }
+
+    100% {
+        opacity: 0;
+        filter: blur(10px);
+    }
+}
+
+@media screen and (max-width: 768px) {
+    .hero-content h1 {
+        font-size: 32px;
+    }
+
+    .hero-content p {
+        font-size: 16px;
+    }
+}
+
+.hero-content h1 {
+    font-family: 'Google Sans Flex', sans-serif;
+    font-size: 48px;
+    margin-bottom: 15px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    /* Helps readability */
+}
+
+.hero-content p {
+    font-family: 'Poppins', sans-serif;
+    font-size: 20px;
+    margin-bottom: 25px;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    /* Helps readability */
+}
+
+.btn {
+    font-family: 'Chief Ranced', serif;
+    padding: 12px 30px;
+    background-color: #f4b400;
+    color: #1e1e2f;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 5px;
+}
+
+.btn:hover {
+    background-color: #d89e00;
+}
+
+/* Services */
+.services {
+    padding: 60px 50px;
+    background-color: white;
+    text-align: center;
+}
+
+.services h2 {
+    margin-bottom: 40px;
+    font-size: 32px;
+}
+
+.service-box {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+}
+
+.service {
+    background-color: #f5f5f5;
+    padding: 25px;
+    width: 300px;
+    border-radius: 8px;
+    margin: 10px;
+}
+
+@media screen and (max-width: 768px) {
+    .services {
+        padding: 40px 20px;
+    }
+
+    .service {
+        width: 100%;
+    }
+
+    .featured {
+        padding: 40px 20px;
+    }
+
+    .property {
+        width: 100%;
+    }
+
+    .cta {
+        padding: 40px 20px;
+    }
+}
+
+.service h3 {
+    margin-bottom: 15px;
+    color: #1e1e2f;
+}
+
+/* Featured Properties */
+.featured {
+    padding: 60px 50px;
+    text-align: center;
+}
+
+.featured h2 {
+    margin-bottom: 30px;
+    font-size: 32px;
+}
+
+.property-box {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.property {
+    background-color: white;
+    padding: 25px;
+    width: 280px;
+    margin: 10px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Call to Action */
+.cta {
+    background-color: #1e1e2f;
+    color: white;
+    padding: 60px 50px;
+    text-align: center;
+}
+
+.cta h2 {
+    margin-bottom: 15px;
+}
+
+/* Footer */
+footer {
+    background-color: #111;
+    color: white;
+    text-align: center;
+    padding: 15px;
+}

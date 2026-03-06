@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Show Images</title>
+</head>
+
+<body>
+    <h2>Uploaded Images</h2>
+
+    {% for img in images %}
+    <img src="{{ img.image_url }}" width="300" style="margin: 10px;">
+    {% empty %}
+    <p>No images found.</p>
+    {% endfor %}
+    <br><br>
+    <a href="/upload/">Upload New Image</a>
+</body>
+
+</html>

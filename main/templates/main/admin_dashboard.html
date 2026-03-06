@@ -1,0 +1,223 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | RUBIK PROPERTIES</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+</head>
+
+<body class="admin-body">
+    <aside class="sidebar">
+        <div class="sidebar-logo">RUBIK <span>ADMIN</span></div>
+        <nav class="sidebar-nav">
+            <a class="nav-item active" onclick="showSection('gallery-section', this)">Gallery</a>
+            <a class="nav-item" onclick="showSection('categories-section', this)">Categories</a>
+            <a class="nav-item" onclick="showSection('offers-section', this)">Listings (Sales)
+                {% if pending_offer_count %}<span class="badge">{{ pending_offer_count }}</span>{% endif %}
+            </a>
+            <a class="nav-item" onclick="showSection('requests-section', this)">Requests
+                {% if request_count %}<span class="badge">{{ request_count }}</span>{% endif %}
+            </a>
+        </nav>
+        <div class="sidebar-footer">
+            <span>Logged in as <strong>{{ admin_user }}</strong></span>
+            <a href="{% url 'admin_logout' %}" class="logout-btn">Logout</a>
+        </div>
+    </aside>
+
+    <main class="admin-main">
+        <header class="admin-header">
+            <h1>Dashboard</h1>
+            <div class="header-stats">
+                <div class="stat-chip">{{ gallery_count }} Gallery Items</div>
+                <div class="stat-chip">{{ offer_count }} Listings{% if pending_offer_count %} · <span
+                        style="color:#f5c842">{{ pending_offer_count }} pending</span>{% endif %}</div>
+                <div class="stat-chip">{{ request_count }} Requests</div>
+            </div>
+        </header>
+
+        <section id="gallery-section" class="admin-section active">
+            <div class="section-header">
+                <h2>Gallery Management</h2>
+                <button class="btn-primary" onclick="document.getElementById('uploadModal').style.display='flex'">+
+                    Upload Image</button>
+            </div>
+            <div class="gallery-grid">
+                {% for img in gallery_images %}
+                <div class="gallery-card">
+                    <img src="{{ img.image.url }}" alt="{{ img.title }}">
+                    <div class="gallery-card-body">
+                        <p>{{ img.title|default:"Untitled" }}</p>
+                        <small>{{ img.uploaded_at|date:"d M Y" }}</small>
+                        <form method="POST" action="{% url 'admin_delete_gallery' img.pk %}"
+                            onsubmit="return confirm('Delete this image?')">
+                            {% csrf_token %}<button type="submit" class="btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="empty-msg">No gallery images yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section id="categories-section" class="admin-section">
+            <div class="section-header">
+                <h2>Property Categories</h2>
+            </div>
+            <form method="POST" action="{% url 'admin_add_category' %}" class="inline-form">
+                {% csrf_token %}
+                <input type="text" name="name" placeholder="New category name" required>
+                <button type="submit" class="btn-primary">Add Category</button>
+            </form>
+            <div class="category-list">
+                {% for cat in categories %}
+                <div class="category-row">
+                    <span class="cat-name">{{ cat.name }}</span>
+                    <form method="POST" action="{% url 'admin_delete_category' cat.pk %}"
+                        onsubmit="return confirm('Delete category?')">
+                        {% csrf_token %}<button type="submit" class="btn-danger">Delete</button>
+                    </form>
+                </div>
+                {% empty %}
+                <p class="empty-msg">No categories yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section id="offers-section" class="admin-section">
+            <div class="section-header">
+                <h2>Property Listings (Sales)</h2>
+            </div>
+            <div class="filter-tabs">
+                <button class="ftab active" onclick="filterListings('all', this, 'offersGrid')">All</button>
+                <button class="ftab" onclick="filterListings('pending', this, 'offersGrid')">Pending</button>
+                <button class="ftab" onclick="filterListings('approved', this, 'offersGrid')">Approved</button>
+                <button class="ftab" onclick="filterListings('rejected', this, 'offersGrid')">Rejected</button>
+            </div>
+            <div class="listings-admin-grid" id="offersGrid">
+                {% for listing in offers %}
+                <div class="listing-admin-card" data-status="{{ listing.status }}">
+                    <div class="listing-admin-header">
+                        <span class="status-badge status-{{ listing.status }}">{{ listing.status|upper }}</span>
+                        <span class="listing-cat" style="margin-left:auto;">{{ listing.property_type }}</span>
+                        <small style="margin-left:10px;">{{ listing.submitted_at|date:"d M Y" }}</small>
+                    </div>
+                    <div class="listing-info">
+                        <div><strong>{{ listing.owner_name }}</strong></div>
+                        <div>{{ listing.phone }}</div>
+                        {% if listing.location %}<div>Loc: {{ listing.location }}</div>{% endif %}
+                        {% if listing.expected_price %}<div>Price: {{ listing.expected_price }}</div>{% endif %}
+                    </div>
+                    {% if listing.image_urls %}
+                    <div class="admin-img-strip">
+                        {% for img_url in listing.image_urls %}
+                        <img src="{{ img_url }}" alt="img" onclick="openAdminLightbox('{{ img_url }}')">
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                    <div class="listing-actions">
+                        {% if listing.status != 'approved' %}
+                        <form method="POST" action="{% url 'admin_approve_listing' listing.id %}">
+                            {% csrf_token %}<button type="submit" class="btn-approve">Approve</button>
+                        </form>
+                        {% endif %}
+                        {% if listing.status != 'rejected' %}
+                        <form method="POST" action="{% url 'admin_reject_listing' listing.id %}">
+                            {% csrf_token %}<button type="submit" class="btn-reject">Reject</button>
+                        </form>
+                        {% endif %}
+                        <form method="POST" action="{% url 'admin_delete_listing' listing.id %}"
+                            onsubmit="return confirm('Delete?')">
+                            {% csrf_token %}<button type="submit" class="btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="empty-msg">No listings yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+
+        <section id="requests-section" class="admin-section">
+            <div class="section-header">
+                <h2>Requests (Rentals)</h2>
+            </div>
+            <div class="listings-admin-grid" id="requestsGrid">
+                {% for listing in requests %}
+                <div class="listing-admin-card" data-status="{{ listing.status }}">
+                    <div class="listing-admin-header">
+                        <span class="listing-cat">{{ listing.property_type|default:"Request" }}</span>
+                        <span class="listing-code">{{ listing.property_code|default:"NO_CODE" }}</span>
+                        <small style="margin-left:auto;">{{ listing.submitted_at|date:"d M Y" }}</small>
+                    </div>
+                    <div class="listing-info">
+                        <div><strong>{{ listing.owner_name }}</strong></div>
+                        <div>{{ listing.phone }}</div>
+                        {% if listing.location %}<div>Loc: {{ listing.location }}</div>{% endif %}
+                        {% if listing.expected_price %}<div>Budget: {{ listing.expected_price }}</div>{% endif %}
+                    </div>
+                    <div class="listing-actions">
+                        <form method="POST" action="{% url 'admin_delete_listing' listing.id %}"
+                            onsubmit="return confirm('Delete?')">
+                            {% csrf_token %}<button type="submit" class="btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+                {% empty %}
+                <p class="empty-msg">No requests yet.</p>
+                {% endfor %}
+            </div>
+        </section>
+    </main>
+
+    <div id="uploadModal" class="modal-overlay" style="display:none;">
+        <div class="modal-box">
+            <h3>Upload Image</h3>
+            <form method="POST" action="{% url 'admin_upload_gallery' %}" enctype="multipart/form-data">
+                {% csrf_token %}
+                <input type="text" name="title" placeholder="Caption (optional)"
+                    style="width:100%;margin-bottom:10px;padding:8px;background:#2a2a2a;border:1px solid #c9a84c33;color:#fff;border-radius:4px;">
+                <input type="file" name="image" accept="image/*" required
+                    style="width:100%;margin-bottom:10px;color:#888;">
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary"
+                        onclick="document.getElementById('uploadModal').style.display='none'">Cancel</button>
+                    <button type="submit" class="btn-primary">Upload</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div id="adminLightbox" onclick="this.style.display='none'"
+        style="display:none;position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9999;align-items:center;justify-content:center;">
+        <img id="adminLightboxImg" style="max-width:90vw;max-height:90vh;border-radius:8px;" src="" alt="">
+    </div>
+    <script>
+        function showSection(id, el) {
+            document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+            el.classList.add('active');
+        }
+        function filterListings(status, btn, gridId) {
+            const container = btn.closest('.admin-section');
+            container.querySelectorAll('.ftab').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById(gridId).querySelectorAll('.listing-admin-card').forEach(card => {
+                card.style.display = (status === 'all' || card.dataset.status === status) ? '' : 'none';
+            });
+        }
+        function openAdminLightbox(url) {
+            document.getElementById('adminLightboxImg').src = url;
+            document.getElementById('adminLightbox').style.display = 'flex';
+        }
+    </script>
+</body>
+
+</html>

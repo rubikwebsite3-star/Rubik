@@ -1,0 +1,88 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}RUBIK CONSULTANCY{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/index.css' %}?v=8">
+{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<section class="hero">
+    <!-- Slideshow Background -->
+    <div class="slideshow">
+        <div class="slide" style="background-image: url('{% static 'images/img1.jpg' %}');"></div>
+        <div class="slide" style="background-image: url('{% static 'images/img2.jpg' %}');"></div>
+        <div class="slide" style="background-image: url('{% static 'images/img3.jpg' %}');"></div>
+        <div class="slide" style="background-image: url('{% static 'images/img4.jpg' %}');"></div>
+    </div>
+
+    <div class="hero-content">
+        <h1>Your Trusted Real Estate Partner</h1>
+        <p>Rentals, Buying &amp; Selling of Plots, Apartments, and Houses</p>
+        <a href="{% url 'buyorsell' %}" class="btn floating-element magnetic-btn">Explore Properties</a>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="services reveal">
+    <h2>OUR EXPERTISE</h2>
+    <div class="service-box">
+        <div class="service reveal-left">
+            <h3>Property Rentals</h3>
+            <p>Affordable and premium rental options for homes and apartments.</p>
+        </div>
+        <div class="service reveal">
+            <h3>Buy &amp; Sell Properties</h3>
+            <p>Trusted deals for plots, houses, and apartments.</p>
+        </div>
+        <div class="service reveal-right">
+            <h3>Commercial</h3>
+            <p>commercial plots and buildings in prime locations.</p>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Properties -->
+<section class="featured reveal">
+    <h2>OUR BACKGROUND SERVICES</h2>
+    <div class="property-box">
+        <div class="property reveal-left">
+            <h3>Service/Maintanance</h3>
+            <p>Interior works • Deep cleaning</p>
+        </div>
+        <div class="property reveal">
+            <h3>Vacation Rentals</h3>
+            <p>Private villas • Resorts • Rooms</p>
+        </div>
+        <div class="property reveal-right">
+            <h3>Event Space</h3>
+            <p>Intimate Venues • Party halls • Open Stage</p>
+        </div>
+    </div>
+</section>
+
+<!-- Partner Marquee -->
+<div class="marquee reveal">
+    <div class="track">
+        <span>Trusted by 500+ Clients</span>
+        <span>Luxury Real Estate Specialists</span>
+        <span>Premier Property Management</span>
+        <span>Award-Winning Interiors</span>
+        <span>Trusted by 500+ Clients</span>
+        <span>Luxury Real Estate Specialists</span>
+        <span>Premier Property Management</span>
+        <span>Award-Winning Interiors</span>
+    </div>
+</div>
+
+<!-- Call to Action -->
+<section class="cta">
+    <h2>Looking to Buy, Sell or Rent?</h2>
+    <p>Contact RUBIK CONSULTANCY today for the best deals.</p><br><br>
+    <a href="{% url 'contact' %}" class="btn">Contact Us</a>
+</section>
+
+{% endblock %}

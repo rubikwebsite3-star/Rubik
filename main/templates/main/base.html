@@ -1,0 +1,55 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}RUBIK CONSULTANCY{% endblock %}</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/antigravity.css' %}?v=8">
+    {% block extra_css %}{% endblock %}
+</head>
+
+<body>
+
+    <!-- Header / Navigation -->
+    <header>
+        <div class="logo">RUBIK <span>CONSULTANCY</span></div>
+        <div class="menu-toggle" id="mobile-menu">
+            <span class="bar"></span>
+            <span class="bar"></span>
+            <span class="bar"></span>
+        </div>
+        <nav id="nav-menu">
+            <ul>
+                <li><a href="{% url 'home' %}">Home</a></li>
+                <li><a href="{% url 'about' %}">About us</a></li>
+                <li><a href="{% url 'gallery' %}">Gallery</a></li>
+                <li><a href="{% url 'buyorsell' %}">Buy / Sell</a></li>
+                <li><a href="{% url 'contact' %}">Contact</a></li>
+                <li><a href="{% url 'admin_login' %}" id="admin-btn" class="nav-admin-link"
+                        style="display: none;">Admin</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <!-- Admin Invisible Trigger Area -->
+    <div class="logo-trigger" id="admin-trigger"></div>
+
+    <!-- Page Content -->
+    {% block content %}{% endblock %}
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 RUBIK CONSULTANCY. All Rights Reserved.</p>
+    </footer>
+
+    <script src="{% static 'js/effects.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+
+</body>
+
+</html>

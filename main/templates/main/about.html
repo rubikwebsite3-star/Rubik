@@ -1,0 +1,71 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}About Us | RUBIK PROPERTIES{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- Page Title -->
+<section class="page-title">
+    <h1>ABOUT US</h1>
+    <p>Your Trusted Real Estate Partner</p>
+</section>
+
+<!-- About Content -->
+<section class="about">
+    <div class="about-container">
+
+        <h2 class="reveal-left">WHO WE ARE</h2>
+        <p class="reveal-left">
+            <strong>RUBIK PROPERTIES</strong> is a professional real estate consultancy specializing in
+            property buying, selling, leasing, and investment advisory. We help clients make informed
+            real estate decisions through market insights, transparent processes, and strong negotiation support.
+        </p>
+
+        <h2 class="reveal-right">OUR SERVICES</h2>
+        <p class="reveal-right">
+            Our services include residential and commercial real estate consulting, investor advisory,
+            property leasing, and end-to-end transaction support. We work closely with buyers, sellers,
+            investors, and developers to deliver reliable solutions based on client needs and market trends.
+        </p>
+
+        <h2 class="reveal">OUR APPROACH</h2>
+        <p class="reveal">
+            With deep local market knowledge and a client-first approach, we aim to provide trustworthy
+            guidance and long-term value in every real estate transaction.
+        </p>
+
+        <div class="info-box">
+            <div class="info reveal-left">
+                <h3>OUR MISSION</h3>
+                <p>
+                    To simplify real estate decisions by offering transparent, reliable, and
+                    value-driven consultancy services.
+                </p>
+            </div>
+
+            <div class="info reveal">
+                <h3>OUR VISION</h3>
+                <p>
+                    To become a trusted real estate advisory brand known for integrity, expertise,
+                    and long-term client relationships.
+                </p>
+            </div>
+
+            <div class="info reveal-right">
+                <h3>WHY CHOOSE US</h3>
+                <p>
+                    Local expertise, honest advice, strong negotiation support, and a commitment
+                    to client satisfaction at every step.
+                </p>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

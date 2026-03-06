@@ -1,0 +1,60 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Contact Us | RUBIK PROPERTIES{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/contactpage.css' %}">
+{% endblock %}
+
+{% block content %}
+
+<!-- PAGE TITLE -->
+<section class="page-title">
+    <h1>CONTACT US</h1>
+    <p>We are here to help you with your property needs</p>
+</section>
+
+<!-- CONTACT DETAILS -->
+<section class="contact">
+    <div class="contact-container">
+
+        <h2 class="reveal">GET IN TOUCH</h2>
+
+        <div class="contact-box">
+            <div class="contact-item reveal-left">
+                <h3>PHONE</h3>
+                <p><a href="tel:9562315844">9562315844</a></p>
+            </div>
+
+            <div class="contact-item reveal">
+                <h3>EMAIL</h3>
+                <p>
+                    <a href="mailto:rubikpropertiestcr@gmail.com">
+                        rubikpropertiestcr@gmail.com
+                    </a>
+                </p>
+            </div>
+
+            <div class="contact-item reveal-right">
+                <h3>INSTAGRAM</h3>
+                <p>
+                    <a href="https://www.instagram.com/rubik.properties?igsh=MWt1cDBrN3ExY2Z0dw==" target="_blank">
+                        rubik.properties
+                    </a>
+                </p>
+            </div>
+        </div>
+
+        <!-- GOOGLE REVIEWS -->
+        <h2>GOOGLE REVIEWS</h2>
+        <div class="reviews">
+            <iframe src="https://www.google.com/maps?q=Rubik%20Properties&output=embed" width="100%" height="350"
+                style="border:0;" allowfullscreen="" loading="lazy">
+            </iframe>
+        </div>
+
+    </div>
+</section>
+
+{% endblock %}

@@ -1,0 +1,49 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login | RUBIK PROPERTIES</title>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=Poppins:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/admin.css' %}">
+</head>
+
+<body class="admin-login-body">
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="login-logo">RUBIK <span>PROPERTIES</span></div>
+            <h2>Admin Portal</h2>
+            <p class="login-subtitle">Sign in to manage your content</p>
+
+            {% if messages %}
+            {% for message in messages %}
+            <div class="alert-{{ message.tags }}">{{ message }}</div>
+            {% endfor %}
+            {% endif %}
+
+            <form method="POST" action="{% url 'admin_login' %}">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="username">Username</label>
+                    <input type="text" id="username" name="username" placeholder="Enter your username" required
+                        autofocus>
+                </div>
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required>
+                </div>
+                <button type="submit" class="login-btn">Login →</button>
+            </form>
+
+            <p class="back-link"><a href="{% url 'home' %}">← Back to Website</a></p>
+        </div>
+    </div>
+
+</body>
+
+</html>

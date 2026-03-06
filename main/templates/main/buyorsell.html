@@ -1,0 +1,311 @@
+{% extends 'main/base.html' %}
+{% load static %}
+
+{% block title %}Properties | RUBIK PROPERTIES{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/buyorsell.css' %}">
+{% endblock %}
+
+
+{% block content %}
+
+<!-- MESSAGES BLOCK -->
+{% if messages %}
+<div class="messages-container">
+    {% for message in messages %}
+    <div class="message {{ message.tags }}">
+        {{ message }}
+        <span class="close-msg" onclick="this.parentElement.style.display='none'">&times;</span>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+<!-- PAGE TITLE -->
+<section class="page-title">
+    <h1>OUR PROPERTIES</h1>
+    <p>Rentals • Sale • Lease • Plots</p>
+</section>
+
+<!-- APPROVED LISTINGS BY CATEGORY -->
+{% for category_name, listings in grouped_listings %}
+<section class="property-section">
+    <h2>{{ category_name|upper }}</h2>
+    <div class="listings-container">
+        {% for listing in listings %}
+        <div class="listing-card floating-element {% cycle 'reveal-left' 'reveal-right' %}">
+
+            <!-- Instagram-style image Carousel -->
+            {% if listing.image_urls %}
+            <div class="carousel-container">
+                <div class="carousel-counter">
+                    1/{{ listing.image_urls|length }}</div>
+
+                <button class="carousel-nav prev" onclick="moveSlide(this, -1)">&#10094;</button>
+                <button class="carousel-nav next" onclick="moveSlide(this, 1)">&#10095;</button>
+
+                <div class="slider">
+                    {% for img_url in listing.image_urls %}
+                    <section class="slide" onclick="openLightbox('{{ img_url }}')">
+                        <img src="{{ img_url }}" alt="Property image" loading="lazy">
+                    </section>
+                    {% endfor %}
+                </div>
+
+                <div class="carousel-dots">
+                    {% for img_url in listing.image_urls %}
+                    <span class="dot {% if forloop.first %}active{% endif %}"
+                        onclick="goToSlide(this, {{ forloop.counter0 }})"></span>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- Details -->
+            <div class="listing-details">
+                <ul class="property-specs">
+                    <li><strong>Location:</strong> {{ listing.location|default:"Not specified" }}</li>
+                    <li><strong>Type:</strong> {{ listing.property_type|default:"Not specified" }}</li>
+                    <li><strong>Area:</strong> {{ listing.area|default:"Not specified" }}</li>
+                    <li><strong>Price:</strong> <span class="price-highlight">
+                            ₹ {% if listing.expected_price %}{{ listing.expected_price }}{% else %}Negotiable{% endif %}
+                        </span></li>
+                </ul>
+                {% if listing.details %}
+                <p class="listing-desc">{{ listing.details }}</p>
+                {% endif %}
+                <p class="listing-contact">
+                    <a href="https://wa.me/919562315844?text=Hi, I'm interested in the property {{ listing.property_code }} ({{ listing.property_type }} at {{ listing.location }})."
+                        target="_blank" class="wa-btn">
+                        Contact on WhatsApp
+                    </a>
+                </p>
+
+                {% if user.is_staff %}
+                <div class="admin-actions" style="margin-top: 15px; border-top: 1px solid #333; padding-top: 10px;">
+                    <form action="{% url 'admin_delete_listing' listing.id %}" method="POST"
+                        onsubmit="return confirm('Delete this listing?');">
+                        {% csrf_token %}
+                        <button type="submit"
+                            style="background: #ff4444; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; width: 100%; font-weight: bold;">
+                            🗑️ DELETE LISTING (ADMIN)
+                        </button>
+                    </form>
+                </div>
+                {% endif %}
+            </div>
+
+        </div>
+        {% endfor %}
+    </div>
+</section>
+{% empty %}
+<section class="no-listings">
+    <p>No approved properties yet. Check back soon!</p>
+</section>
+{% endfor %}
+
+<!-- SUBMIT ENQUIRY FORM -->
+<section class="add-property">
+    <!-- Toggle Tabs -->
+    <div class="form-tabs">
+        <button type="button" class="tab-btn active" onclick="switchForm('offer')">LIST PROPERTY</button>
+        <button type="button" class="tab-btn" onclick="switchForm('request')">REQUEST PROPERTY</button>
+    </div>
+
+    <form method="POST" action="{% url 'submit_property' %}" enctype="multipart/form-data" id="enquiryForm">
+        {% csrf_token %}
+        <input type="hidden" name="listing_type" id="listingTypeInput" value="offer">
+
+        <div class="form-row">
+            <input type="text" name="owner_name" id="ownerNameInput" placeholder="Your Full Name *" required>
+            <input type="tel" name="phone" placeholder="Your Phone Number *" required>
+        </div>
+
+        <div class="form-row">
+            <input type="text" name="location" id="locationInput" placeholder="Location" required>
+        </div>
+
+        <div class="form-row">
+            <select name="property_type" required>
+                <option value="">Property Type</option>
+                <option>RENTALS</option>
+                <option>LEASE</option>
+                <option>SALE</option>
+                <option>COMMERCIAL</option>
+                <option>OTHERS</option>
+            </select>
+            <input type="text" name="area" id="areaInput" placeholder="Area (e.g., 1000 Sq.ft)">
+        </div>
+
+        <div class="form-row">
+            <input type="text" name="expected_price" id="priceInput" placeholder="Expected Price / Rent" required>
+            <div style="visibility: hidden; flex: 1;"></div>
+        </div>
+
+        <textarea name="details" id="detailsInput" placeholder="Additional details about what you're looking for..."
+            rows="4"></textarea>
+
+        <div class="upload-section" id="uploadSection">
+            <div id="previewContainer" class="preview-container">
+                <div class="add-more-box" onclick="document.getElementById('imgInput').click()" title="Add Image">+
+                </div>
+            </div>
+            <input type="file" id="imgInput" name="images" accept="image/*" multiple style="display: none;"
+                onchange="handleFileSelect(this)">
+            <p class="form-subtitle" style="margin-top: 10px; text-align: left; margin-bottom: 10px;">Click the + to
+                select or add images</p>
+        </div>
+
+        <button type="submit" class="submit-btn" id="submitBtn">SEND ENQUIRY →</button>
+    </form>
+</section>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" onclick="this.style.display='none'">
+    <img id="lightbox-img" src="" alt="Property">
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Image Carousel Counter Logic
+    const carouselObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                const slider = entry.target.parentElement;
+                const container = slider.parentElement;
+                const counter = container.querySelector('.carousel-counter');
+                const slides = Array.from(slider.querySelectorAll('.slide'));
+                const index = slides.indexOf(entry.target) + 1;
+                counter.innerText = index + '/' + slides.length;
+            }
+        });
+    }, { threshold: 0.7 });
+
+    document.querySelectorAll('.slide').forEach(slide => carouselObserver.observe(slide));
+
+    function openLightbox(url) {
+        document.getElementById('lightbox-img').src = url;
+        document.getElementById('lightbox').style.display = 'flex';
+    }
+
+    // Switch between List and Request forms
+    function switchForm(type) {
+        const listingTypeInput = document.getElementById('listingTypeInput');
+        const uploadSection = document.getElementById('uploadSection');
+        const ownerNameInput = document.getElementById('ownerNameInput');
+        const areaInput = document.getElementById('areaInput');
+        const priceInput = document.getElementById('priceInput');
+        const detailsInput = document.getElementById('detailsInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const tabs = document.querySelectorAll('.tab-btn');
+
+        listingTypeInput.value = type;
+
+        // Update active tab
+        tabs.forEach(tab => {
+            const tabText = tab.innerText.toLowerCase();
+            if (type === 'request' && tabText.includes('request')) {
+                tab.classList.add('active');
+            } else if (type === 'offer' && tabText.includes('list')) {
+                tab.classList.add('active');
+            } else {
+                tab.classList.remove('active');
+            }
+        });
+
+        if (type === 'request') {
+            uploadSection.style.display = 'none';
+            ownerNameInput.placeholder = "Client Name *";
+            priceInput.placeholder = "Budget / Max Price";
+            detailsInput.placeholder = "Tell us what features and requirements you have...";
+            areaInput.style.display = 'none';
+            submitBtn.innerText = "SEND REQUEST →";
+        } else {
+            uploadSection.style.display = 'block';
+            ownerNameInput.placeholder = "Your Full Name *";
+            priceInput.placeholder = "Expected Price / Rent";
+            detailsInput.placeholder = "Additional details about what you're looking for...";
+            areaInput.style.display = 'block';
+            submitBtn.innerText = "SEND ENQUIRY →";
+        }
+    }
+
+    // Prevent double submission and show status
+    document.getElementById('enquiryForm').onsubmit = function () {
+        const btn = document.getElementById('submitBtn');
+        btn.disabled = true;
+        btn.innerText = "Processing...";
+        btn.style.opacity = "0.7";
+        btn.style.cursor = "not-allowed";
+    };
+
+    // Advanced Multi-Image Upload Logic
+    let selectedFiles = new DataTransfer();
+
+    function handleFileSelect(input) {
+        const files = input.files;
+        for (let i = 0; i < files.length; i++) {
+            selectedFiles.items.add(files[i]);
+        }
+        input.files = selectedFiles.files; // Sync back to input
+        renderPreviews();
+    }
+
+    function removeImage(index) {
+        const newDataTransfer = new DataTransfer();
+        const files = selectedFiles.files;
+        for (let i = 0; i < files.length; i++) {
+            if (i !== index) {
+                newDataTransfer.items.add(files[i]);
+            }
+        }
+        selectedFiles = newDataTransfer;
+        document.getElementById('imgInput').files = selectedFiles.files; // Sync back to input
+        renderPreviews();
+    }
+
+    function renderPreviews() {
+        const container = document.getElementById('previewContainer');
+        // Keep only the "Add More" box
+        const addMoreBox = container.querySelector('.add-more-box');
+        if (!addMoreBox) return; // Guard for requests where it might be hidden
+
+        container.innerHTML = '';
+
+        const files = selectedFiles.files;
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            const reader = new FileReader();
+
+            const previewItem = document.createElement('div');
+            previewItem.className = 'preview-item';
+
+            const img = document.createElement('img');
+            const removeBtn = document.createElement('div');
+            removeBtn.className = 'preview-remove';
+            removeBtn.innerHTML = '&times;';
+            removeBtn.onclick = (e) => {
+                e.stopPropagation();
+                removeImage(i);
+            };
+
+            reader.onload = function (e) {
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+
+            previewItem.appendChild(img);
+            previewItem.appendChild(removeBtn);
+            container.appendChild(previewItem);
+        }
+
+        // Re-append the "Add More" box at the end
+        container.appendChild(addMoreBox);
+    }
+
+</script>
+{% endblock %}
