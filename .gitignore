@@ -10,7 +10,7 @@ media/
 .env
 
 # Firebase Key (SENSITIVE)
-firebase_key.json
+#firebase_key.json
 
 # Python
 __pycache__/
