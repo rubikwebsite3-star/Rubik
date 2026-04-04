@@ -51,21 +51,26 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'rubikproject.urls'
-
 TEMPLATES = [
     {
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
-        'OPTIONS': {
-            'context_processors': [
-                'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.messages.context_processors.messages',
-            ],
-        },
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
     },
 ]
+
+# TEMPLATES = [
+#     {
+#         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+#         'DIRS': [],
+#         'APP_DIRS': True,
+#         'OPTIONS': {
+#             'context_processors': [
+#                 'django.template.context_processors.debug',
+#                 'django.template.context_processors.request',
+#                 'django.contrib.messages.context_processors.messages',
+#             ],
+#         },
+#     },
+# ]
 
 WSGI_APPLICATION = 'rubikproject.wsgi.application'
 
