@@ -23,6 +23,26 @@
         <p style="grid-column: 1/-1; text-align: center; color: #888; padding: 40px;">No gallery images yet.</p>
         {% endfor %}
     </div>
+ <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-app.js";
+      import { getAuth } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-auth.js";
+      import { getFirestore } from "https://www.gstatic.com/firebasejs/12.11.0/firebase-firestore.js";
+
+      const firebaseConfig = {
+        apiKey: "AIzaSyDx0...",
+        authDomain: "rubik-ce259.firebaseapp.com",
+        projectId: "rubik-ce259",
+        storageBucket: "rubik-ce259.appspot.com",
+        messagingSenderId: "685891595679",
+        appId: "1:685891595679:web:e0dc39c00b159d6a4fe1aa"
+      };
+
+      const app = initializeApp(firebaseConfig);
+      const auth = getAuth(app);
+      const db = getFirestore(app);
+
+      console.log("Firebase connected ✅");
+    </script>
 </section>
 
 {% endblock %}
