@@ -6,6 +6,7 @@ django-cors-headers==4.4.0
 firebase-admin==6.9.0
 psycopg2-binary==2.9.9
 python-decouple==3.8
-opencv-python==4.13.0.90
+opencv-python-headless==4.13.0.90
 requests==2.32.4
 pillow==10.4.0
+python-dotenv==1.0.1
